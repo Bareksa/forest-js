@@ -1,0 +1,29 @@
+{
+    "compilerOptions": {
+        "target": "ES2017",
+        "module": "commonjs",
+        "declaration": true,
+        "declarationMap": true,
+        "sourceMap": true,
+        "outDir": "dist",
+        "downlevelIteration": true,
+        "strict": true,
+        "alwaysStrict": true,
+        "resolveJsonModule": true,
+        "noUnusedLocals": false,
+        "noUnusedParameters": false,
+        "noImplicitReturns": true,
+        "noFallthroughCasesInSwitch": true,
+        "moduleResolution": "node",
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "removeComments": true,
+        "baseUrl": ".",
+        "forceConsistentCasingInFileNames": true,
+        "incremental": true,
+        "assumeChangesOnlyAffectDirectDependencies": true
+    },
+    "exclude": ["dist", "test", "src/**/*.test.ts", "lib/**/*.test.ts"],
+    "include": ["src", "lib"],
+    "compileOnSave": true
+}
