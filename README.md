@@ -4,7 +4,7 @@ Vault Library for NodeJS modified for Bareksa Environment Specific Usecase
 
 # Installation
 
-```sh
+```bash
 npm install https://github.com/Bareksa/forest-js.git
 ```
 
@@ -13,9 +13,13 @@ npm install https://github.com/Bareksa/forest-js.git
 ```javascript
 const { Forest } = require('forest')
 
-Forest.init('token', 'localhost:8200')
+// Using https here will automatically attempts to use secure connection
+// By default uses 'kv' engine. This can be set in the third param, which is config object
+// See api docs for more detail.
+// init only need to be called once in the app entry point.
+Forest.init('token', 'http://localhost:8200')
 
-Forest.getKeyValue('foo')
+Forest.getKeyValue('some-conf')
     // handle vault key value data
     .then((data) => {})
     // handle error
