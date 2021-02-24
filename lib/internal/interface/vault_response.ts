@@ -14,16 +14,15 @@ export class VaultErrorResponse implements Error {
     public kind: string
     constructor(public code: number, err: string) {
         const e = JSON.parse(err)
-        this.errors = (e['errors'] as string[]) || ['']
+        this.errors = (e['errors'] as string[]) || []
+        if (!this.errors.length) {
+            this.errors = ['resource not found']
+        }
         this.kind = 'VaultErrorResponse'
     }
 
     get message() {
-        let m = this.errors.join(', ')
-        if (m === '') {
-            m = 'resource not found'
-        }
-        return m
+        return this.errors.join(', ')
     }
 
     get name() {

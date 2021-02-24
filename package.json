@@ -6,6 +6,7 @@
     "types": "dist/index.d.ts",
     "scripts": {
         "test": "jest",
+        "coverage": "jest --coverage",
         "doc": "typedoc ./lib/index.ts --out docs",
         "build": "tsc",
         "install": "tsc"

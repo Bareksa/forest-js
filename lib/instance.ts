@@ -14,7 +14,8 @@ export class Forest {
         if (!token) throw new Error('empty vault token string')
         this._token = token.trim()
 
-        const [protocol, hostname] = host.trim().split('://')
+        const parser = host.trim().split('://')
+        let [protocol, hostname] = parser
         let secure: boolean
         switch (protocol) {
             case 'http':
@@ -24,8 +25,12 @@ export class Forest {
                 secure = true
                 break
             default:
-                if (protocol.length) {
+                // Protocol is not http or https, but THERE IS protocol given
+                if (parser.length > 1) {
                     throw new Error(`protocol '${protocol}' is not supported`)
+                } else {
+                    // there's no protocol given so the whole thing is hostname
+                    hostname = parser[0]
                 }
                 secure = false
                 break
