@@ -6,24 +6,59 @@ import doRequest from './internal/repo/request_gen'
 export class Forest {
     private _config: ForestConfigInternal
     private _token: string
-    constructor(token: string, config?: ForestConfig) {
+    constructor(
+        token: string,
+        host = 'http://localhost:8200',
+        config?: ForestConfig
+    ) {
         if (!token) throw new Error('empty vault token string')
-        this._token = token
+        this._token = token.trim()
+
+        const [protocol, hostname] = host.trim().split('://')
+        let secure: boolean
+        switch (protocol) {
+            case 'http':
+                secure = false
+                break
+            case 'https':
+                secure = true
+                break
+            default:
+                if (protocol.length) {
+                    throw new Error(`protocol '${protocol}' is not supported`)
+                }
+                secure = false
+                break
+        }
+        let port: number
+        let _p = hostname.split(':')[1]
+        if (_p) {
+            const stringPort = _p.split('/')[0]
+            port = Number(stringPort)
+            if (isNaN(port)) {
+                throw new Error(
+                    `cannot parse into number for port from value: '${stringPort}'`
+                )
+            }
+        } else {
+            port = 8200
+        }
+        let _host = hostname.split(':')[0].split('/')[0]
         if (!config) {
             this._config = {
                 kvEngine: 'kv',
                 timeout: 15000,
-                secure: false,
-                port: 8200,
-                host: 'localhost',
+                secure,
+                port,
+                host: _host,
             }
         } else {
             this._config = {
                 kvEngine: config.kvEngine || 'kv',
                 timeout: config.timeout || 15000,
-                secure: config.ssl || false,
-                port: config.port || 8200,
-                host: config.host || 'localhost',
+                port,
+                host: _host,
+                secure,
             }
         }
     }

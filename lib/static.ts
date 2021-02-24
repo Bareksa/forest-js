@@ -1,6 +1,8 @@
 import { Forest } from './instance'
 import { ForestConfig } from './interface/forest_config'
 
+const DEFAULT_HOST = 'http://localhost:8200'
+
 let instance: Forest
 
 /**
@@ -35,16 +37,20 @@ export default class ForestStatic {
      * initializes global forest instance.
      * please note that if config is not given, the default kv engine is 'kv'
      */
-    static init(token: string, config?: ForestConfig) {
-        instance = new Forest(token, config)
+    static init(token: string, host = DEFAULT_HOST, config?: ForestConfig) {
+        instance = new Forest(token, host, config)
     }
 
     /**
      * initializes a forest instance.
      * please note that if config is not given, the default kv engine is 'kv'
      */
-    static createInstance(token: string, config?: ForestConfig) {
-        return new Forest(token, config)
+    static createInstance(
+        token: string,
+        host = DEFAULT_HOST,
+        config?: ForestConfig
+    ) {
+        return new Forest(token, host, config)
     }
 
     /**
