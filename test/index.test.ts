@@ -1,11 +1,11 @@
 import 'jest'
-import ForestStatic, { Forest } from '../lib'
+import { Forest, ForestInstance } from '../lib'
 
 describe('library declaration', () => {
     test('success declaring forest instance', () => {
-        const want = new Forest('aaa')
-        const got = ForestStatic.createInstance('aaa')
-        expect(got).toBeInstanceOf(Forest)
+        const want = new ForestInstance('aaa')
+        const got = Forest.createInstance('aaa')
+        expect(got).toBeInstanceOf(ForestInstance)
         expect(got).toEqual(want)
     })
 })

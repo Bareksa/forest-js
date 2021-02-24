@@ -1,5 +1,3 @@
-import ForestStatic from './static'
-
-export default ForestStatic
-export { Forest } from './instance'
+export { Forest as ForestInstance } from './instance'
 export { ForestConfig } from './interface/forest_config'
+export { default as Forest } from './static'
