@@ -1,5 +1,5 @@
-import { Forest } from './instance.js'
-import { ForestConfig } from './interface/forest_config.js'
+import { Forest } from './instance'
+import { ForestConfig } from './interface/forest_config'
 
 let instance: Forest
 
@@ -35,20 +35,16 @@ export default class ForestStatic {
      * initializes global forest instance.
      * please note that if config is not given, the default kv engine is 'kv'
      */
-    static init(token: string, host = 'localhost:8200', config?: ForestConfig) {
-        instance = new Forest(token, host, config)
+    static init(token: string, config?: ForestConfig) {
+        instance = new Forest(token, config)
     }
 
     /**
      * initializes a forest instance.
      * please note that if config is not given, the default kv engine is 'kv'
      */
-    static createInstance(
-        token: string,
-        host = 'localhost:8200',
-        config?: ForestConfig
-    ) {
-        return new Forest(token, host, config)
+    static createInstance(token: string, config?: ForestConfig) {
+        return new Forest(token, config)
     }
 
     /**

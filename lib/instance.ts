@@ -1,42 +1,47 @@
-import { ForestConfig } from './interface/forest_config.js'
-import ForestConfigInternal from './internal/interface/forest_config.js'
-import doRequest from './internal/repo/request_gen.js'
+import { ForestConfig } from './interface/forest_config'
+import ForestConfigInternal from './internal/interface/forest_config'
+import { VaultSuccessResponse } from './internal/interface/vault_response.js'
+import doRequest from './internal/repo/request_gen'
 
 export class Forest {
     private _config: ForestConfigInternal
     private _token: string
-    private _host: string
-    constructor(token: string, host = 'localhost:8200', config?: ForestConfig) {
-        if (!this.token) throw new Error('empty vault token string')
+    constructor(token: string, config?: ForestConfig) {
+        if (!token) throw new Error('empty vault token string')
         this._token = token
-        this._host = host
         if (!config) {
             this._config = {
                 kvEngine: 'kv',
                 timeout: 15000,
-                secure: true,
+                secure: false,
+                port: 8200,
+                host: 'localhost',
             }
         } else {
             this._config = {
                 kvEngine: config.kvEngine || 'kv',
                 timeout: config.timeout || 15000,
-                secure: config.ssl || true,
+                secure: config.ssl || false,
+                port: config.port || 8200,
+                host: config.host || 'localhost',
             }
         }
     }
 
     async getKeyValue<T = any>(key: string): Promise<T> {
         const { timeout, kvEngine, secure } = this.config
-        const response = await doRequest<T>(
+        const response = await doRequest(
             this.token,
             this.host,
+            this.port,
             `/v1/${kvEngine}/${key}`,
             'GET',
             undefined,
             timeout,
             secure
         )
-        return response.data
+        const parsedResponse: VaultSuccessResponse<T> = JSON.parse(response)
+        return parsedResponse.data
     }
 
     get config() {
@@ -48,6 +53,10 @@ export class Forest {
     }
 
     get host() {
-        return this._host
+        return this._config.host
+    }
+
+    get port() {
+        return this._config.port
     }
 }

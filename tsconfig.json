@@ -23,7 +23,7 @@
         "incremental": true,
         "assumeChangesOnlyAffectDirectDependencies": true
     },
-    "exclude": ["dist", "test", "src/**/*.test.ts", "lib/**/*.test.ts"],
-    "include": ["src", "lib"],
+    "exclude": ["dist", "**/*.test.ts"],
+    "include": ["src", "lib", "test"],
     "compileOnSave": true
 }

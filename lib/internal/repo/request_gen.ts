@@ -1,9 +1,6 @@
 import http, { ClientRequest, IncomingMessage, RequestOptions } from 'http'
 import https from 'https'
-import {
-    VaultErrorResponse,
-    VaultSuccessResponse,
-} from '../interface/vault_response.js'
+import { VaultErrorResponse } from '../interface/vault_response'
 
 interface Body {
     [key: string]: any
@@ -12,17 +9,19 @@ interface Body {
 type Method = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'LIST'
 
 /**
- * The body is any json compatible requests
+ * The body is any json compatible requests.
+ * Returns empty string if status code is 204
  */
-export default function doRequest<T = any>(
+export default function doRequest(
     token: string,
     host: string,
+    port: number,
     path: string,
     method: Method,
     body?: Body | Body[],
     timeout = 15000,
-    secure = true
-): Promise<VaultSuccessResponse<T>> {
+    secure = false
+): Promise<string> {
     return new Promise((resolve, reject) => {
         const responseHandler = (res: IncomingMessage) => {
             let responseBody = Buffer.from([])
@@ -31,6 +30,10 @@ export default function doRequest<T = any>(
                 responseBody = Buffer.concat([responseBody, chunk])
             })
             res.on('end', () => {
+                if (res.statusCode! === 204) {
+                    resolve('{}')
+                    return
+                }
                 if (res.statusCode! >= 400) {
                     reject(
                         new VaultErrorResponse(
@@ -39,10 +42,7 @@ export default function doRequest<T = any>(
                         )
                     )
                 } else {
-                    const result: VaultSuccessResponse<T> = JSON.parse(
-                        responseBody.toString('utf-8')
-                    )
-                    resolve(result)
+                    resolve(responseBody.toString('utf-8'))
                 }
             })
         }
@@ -54,7 +54,7 @@ export default function doRequest<T = any>(
             method,
             path,
             timeout,
-            port: 443,
+            port,
             headers: {
                 'X-Vault-Token': token,
                 'X-Vault-Request': 'true',
