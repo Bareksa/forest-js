@@ -139,6 +139,53 @@ export class Forest {
     }
 
     /**
+     * get value from the key on stored object.
+     * No cast is done.
+     * Returns undefined if no value is found.
+     */
+    getValue(key: string): any {
+        const path = key.split('.')
+        return this.drillDown(this.kv, path)
+    }
+
+    /**
+     * get value from the key on stored object.
+     * No cast is done.
+     * Returns false if no value is found.
+     */
+    getBool(key: string): boolean {
+        const path = key.split('.')
+        const value = this.drillDown(this.kv, path)
+        if (value === void 0) {
+            return false
+        }
+        return value as boolean
+    }
+
+    /**
+     * get value from the key on stored object.
+     * value is considered true if truthy, and false if falsey
+     * Returns false if no value is found.
+     */
+    parseBool(key: string): boolean {
+        const path = key.split('.')
+        return !!this.drillDown(this.kv, path)
+    }
+
+    /**
+     * check if value exist from the key on stored object.
+     * Returns false if no value is found.
+     */
+    isExist(key: string): boolean {
+        const path = key.split('.')
+        const value = this.drillDown(this.kv, path)
+        if (value === void 0) {
+            return false
+        }
+        return true
+    }
+
+    /**
      * get value from the key on stored object and attempt
      * to parse it.
      * Returns empty string if no value is found.
