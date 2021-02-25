@@ -140,8 +140,9 @@ export default class ForestStatic {
      * Result value is considered the given class.
      * No cast is done.
      * Returned value ***is undefined*** if no value is found
+     * getAsClass ***does not create instance***. It just maps the value for typing support
      */
-    static getAsClass<T>(key: string, _class: T): T {
-        return instance.getAsClass(key, _class)
+    static getAsClass<T>(_class: T): T {
+        return instance.getAsClass(_class)
     }
 }

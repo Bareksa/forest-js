@@ -19,10 +19,14 @@ const { Forest } = require('forest')
 // init only need to be called once in the app entry point.
 Forest.init('token', 'http://localhost:8200')
 
-Forest.getKeyValue('some-conf')
-    // handle vault key value data
-    .then((data) => {})
-    // handle error
+// Run this early as well if using global management
+Forest.manageKeyValue('some-conf')
+    .then(() => {
+        const possibleStringKey = Forest.getString('somekey') // get value of key, but handled as if the value is string. No casting is done.
+        const parseStringKey = Forest.parseString('somekey') // get value of key, but value is coerced to string. If value is object or array, it will be JSON stringified.
+        const nestedKey = Forest.getString('some.nested.key') // if value is an object, you can get access to nested key this way.
+        // There are more helpers. Check API Docs
+    })
     .catch(console.error)
 ```
 

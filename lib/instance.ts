@@ -108,17 +108,16 @@ export class Forest {
     }
 
     /** @internal */
-    private drillDown(path: string[]): any {
+    private drillDown(state: any, path: string[]): any {
         const [target, ...next] = path
         if (!target) {
             return undefined
         }
-        if (this.kv[target]) {
+        if (state[target]) {
             if (next.length) {
-                this.drillDown(next)
-            } else {
-                return this.kv[target]
+                return this.drillDown(state[target], next)
             }
+            return state[target]
         } else {
             return undefined
         }
@@ -132,7 +131,7 @@ export class Forest {
      */
     getString(key: string): string {
         const path = key.split('.')
-        const value = this.drillDown(path)
+        const value = this.drillDown(this.kv, path)
         if (value === void 0) {
             return ''
         }
@@ -146,7 +145,7 @@ export class Forest {
      */
     parseString(key: string): string {
         const path = key.split('.')
-        const value = this.drillDown(path)
+        const value = this.drillDown(this.kv, path)
         if (value === void 0) {
             return ''
         }
@@ -165,7 +164,7 @@ export class Forest {
      */
     getNumber(key: string): number {
         const path = key.split('.')
-        const value = this.drillDown(path)
+        const value = this.drillDown(this.kv, path)
         if (value === void 0) {
             return 0
         }
@@ -179,7 +178,7 @@ export class Forest {
      */
     parseNumber(key: string): number {
         const path = key.split('.')
-        const value = this.drillDown(path)
+        const value = this.drillDown(this.kv, path)
         if (value === void 0) {
             return 0
         }
@@ -198,7 +197,7 @@ export class Forest {
      */
     getStringArray(key: string): string[] {
         const path = key.split('.')
-        const value = this.drillDown(path)
+        const value = this.drillDown(this.kv, path)
         if (value === void 0) {
             return []
         }
@@ -213,7 +212,7 @@ export class Forest {
      */
     getArray(key: string): any[] {
         const path = key.split('.')
-        const value = this.drillDown(path)
+        const value = this.drillDown(this.kv, path)
         if (value === void 0) {
             return []
         }
@@ -228,7 +227,7 @@ export class Forest {
      */
     getNumberArray(key: string): number[] {
         const path = key.split('.')
-        const value = this.drillDown(path)
+        const value = this.drillDown(this.kv, path)
         if (value === void 0) {
             return []
         }
@@ -239,12 +238,11 @@ export class Forest {
      * get value from the key on stored object.
      * Result value is considered the given class.
      * No cast is done.
-     * Returned value ***is undefined*** if no value is found
+     * Returned value ***is undefined*** if no value is found.
+     * getAsClass ***does not create instance***. It just maps the value for typing support
      */
-    getAsClass<T>(key: string, _class: T): T {
-        const path = key.split('.')
-        const value = this.drillDown(path)
-        return value as T
+    getAsClass<T>(_class: T): T {
+        return this.kv as T
     }
 
     get config() {

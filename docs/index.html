@@ -65,23 +65,31 @@
 				<a href="#installation" id="installation" style="color: inherit; text-decoration: none;">
 					<h1>Installation</h1>
 				</a>
-				<pre><code class="language-sh"><span style="color: #000000">npm install https://github.com/Bareksa/forest-js.git</span>
+				<pre><code class="language-bash"><span style="color: #000000">npm install https://github.com/Bareksa/forest-js.git</span>
 </code></pre>
 				<a href="#example-usage" id="example-usage" style="color: inherit; text-decoration: none;">
 					<h1>Example Usage</h1>
 				</a>
 				<pre><code class="language-javascript"><span style="color: #0000FF">const</span><span style="color: #000000"> { </span><span style="color: #0070C1">Forest</span><span style="color: #000000"> } = </span><span style="color: #795E26">require</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;forest&#039;</span><span style="color: #000000">)</span>
 
-<span style="color: #001080">Forest</span><span style="color: #000000">.</span><span style="color: #795E26">init</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;token&#039;</span><span style="color: #000000">, </span><span style="color: #A31515">&#039;localhost:8200&#039;</span><span style="color: #000000">)</span>
+<span style="color: #008000">// Using https here will automatically attempts to use secure connection</span>
+<span style="color: #008000">// By default uses &#039;kv&#039; engine. This can be set in the third param, which is config object</span>
+<span style="color: #008000">// See api docs for more detail.</span>
+<span style="color: #008000">// init only need to be called once in the app entry point.</span>
+<span style="color: #001080">Forest</span><span style="color: #000000">.</span><span style="color: #795E26">init</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;token&#039;</span><span style="color: #000000">, </span><span style="color: #A31515">&#039;http://localhost:8200&#039;</span><span style="color: #000000">)</span>
 
-<span style="color: #001080">Forest</span><span style="color: #000000">.</span><span style="color: #795E26">getKeyValue</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;foo&#039;</span><span style="color: #000000">)</span>
-<span style="color: #000000">    </span><span style="color: #008000">// handle vault key value data</span>
-<span style="color: #000000">    .</span><span style="color: #795E26">then</span><span style="color: #000000">((</span><span style="color: #001080">data</span><span style="color: #000000">) </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {})</span>
-<span style="color: #000000">    </span><span style="color: #008000">// handle error</span>
+<span style="color: #008000">// Run this early as well if using global management</span>
+<span style="color: #001080">Forest</span><span style="color: #000000">.</span><span style="color: #795E26">manageKeyValue</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;some-conf&#039;</span><span style="color: #000000">)</span>
+<span style="color: #000000">    .</span><span style="color: #795E26">then</span><span style="color: #000000">(() </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {</span>
+<span style="color: #000000">        </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">possibleStringKey</span><span style="color: #000000"> = </span><span style="color: #001080">Forest</span><span style="color: #000000">.</span><span style="color: #795E26">getString</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;somekey&#039;</span><span style="color: #000000">) </span><span style="color: #008000">// get value of key, but handled as if the value is string. No casting is done.</span>
+<span style="color: #000000">        </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">parseStringKey</span><span style="color: #000000"> = </span><span style="color: #001080">Forest</span><span style="color: #000000">.</span><span style="color: #795E26">parseString</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;somekey&#039;</span><span style="color: #000000">) </span><span style="color: #008000">// get value of key, but value is coerced to string. If value is object or array, it will be JSON stringified.</span>
+<span style="color: #000000">        </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">nestedKey</span><span style="color: #000000"> = </span><span style="color: #001080">Forest</span><span style="color: #000000">.</span><span style="color: #795E26">getString</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;some.nested.key&#039;</span><span style="color: #000000">) </span><span style="color: #008000">// if value is an object, you can get access to nested key this way.</span>
+<span style="color: #000000">        </span><span style="color: #008000">// There are more helpers. Check API Docs</span>
+<span style="color: #000000">    })</span>
 <span style="color: #000000">    .</span><span style="color: #795E26">catch</span><span style="color: #000000">(</span><span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #001080">error</span><span style="color: #000000">)</span>
 </code></pre>
 				<a href="#api-docs" id="api-docs" style="color: inherit; text-decoration: none;">
-					<h1><a href="./docs/classes/forest.html">API Docs</a></h1>
+					<h1><a href="https://bareksa.github.io/forest-js/index.html">API Docs</a></h1>
 				</a>
 			</div>
 		</div>
@@ -114,13 +122,15 @@
 		<h2>Legend</h2>
 		<div class="tsd-legend-group">
 			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
-			</ul>
-			<ul class="tsd-legend">
 				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
