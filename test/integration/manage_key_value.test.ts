@@ -16,7 +16,6 @@ beforeAll(() => {
     return doRequest(
         process.env.VAULT_TOKEN!,
         process.env.VAULT_TEST_HOST!,
-        parseInt(process.env.VAULT_TEST_PORT!),
         PATH,
         'PUT',
         {
@@ -60,7 +59,6 @@ afterAll(() =>
     doRequest(
         process.env.VAULT_TOKEN!,
         process.env.VAULT_TEST_HOST!,
-        parseInt(process.env.VAULT_TEST_PORT!),
         PATH,
         'DELETE'
     )

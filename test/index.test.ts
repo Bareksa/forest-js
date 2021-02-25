@@ -8,37 +8,7 @@ describe('library declaration', () => {
         expect(got).toBeInstanceOf(ForestInstance)
         expect(got).toEqual(want)
         expect(got.token).toEqual('aaa')
-        expect(got.host).toEqual('localhost')
-        expect(got.port).toEqual(8200)
-        expect(got.config.secure).toEqual(false)
-    })
-
-    test('declaring with dns resolved name', () => {
-        const got = new ForestInstance('aaa', 'http://example.com')
-        expect(got.host).toEqual('example.com')
-        expect(got.port).toEqual(8200)
-        expect(got.config.secure).toEqual(false)
-    })
-
-    test('using https', () => {
-        const got = new ForestInstance('aaa', 'https://example.com')
-        expect(got.host).toEqual('example.com')
-        expect(got.port).toEqual(8200)
-        expect(got.config.secure).toEqual(true)
-    })
-
-    test('infer http by default', () => {
-        const got = new ForestInstance('aaa', 'example.com')
-        expect(got.host).toEqual('example.com')
-        expect(got.port).toEqual(8200)
-        expect(got.config.secure).toEqual(false)
-    })
-
-    test('get port', () => {
-        const got = new ForestInstance('aaa', 'https://example.com:9999/asdf')
-        expect(got.host).toEqual('example.com')
-        expect(got.port).toEqual(9999)
-        expect(got.config.secure).toEqual(true)
+        expect(got.host).toEqual('http://localhost:8200')
     })
 
     test('expect fail on empty token', () => {

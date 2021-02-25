@@ -1,3 +1,4 @@
+import { ForestInstance } from '.'
 import { Forest } from './instance'
 import { ForestConfig } from './interface/forest_config'
 
@@ -151,7 +152,7 @@ export default class ForestStatic {
      * No cast is done.
      * Returns undefined if no value is found.
      */
-    getValue(key: string): any {
+    static getValue(key: string): any {
         return instance.getValue(key)
     }
 
@@ -160,7 +161,7 @@ export default class ForestStatic {
      * No cast is done.
      * Returns false if no value is found.
      */
-    getBool(key: string): boolean {
+    static getBool(key: string): boolean {
         return instance.getBool(key)
     }
 
@@ -169,7 +170,7 @@ export default class ForestStatic {
      * value is considered true if truthy, and false if falsey
      * Returns false if no value is found.
      */
-    parseBool(key: string): boolean {
+    static parseBool(key: string): boolean {
         return instance.parseBool(key)
     }
 
@@ -177,7 +178,14 @@ export default class ForestStatic {
      * check if value exist from the key on stored object.
      * Returns false if no value is found.
      */
-    isExist(key: string): boolean {
+    static isExist(key: string): boolean {
         return instance.isExist(key)
+    }
+
+    /**
+     * get forest global instance
+     */
+    static getForest(): ForestInstance {
+        return instance
     }
 }
