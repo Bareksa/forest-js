@@ -19,7 +19,7 @@ const { Forest } = require('forest')
 // init only need to be called once in the app entry point.
 Forest.init('token', 'http://localhost:8200')
 
-// Initiate Forest as global manager to enable getString methods globally
+// Initiate Forest as global manager to enable getString, and other helper methods globally
 // Run this early as well if using global management
 Forest.manageKeyValue('some-conf')
     .then(() => {
