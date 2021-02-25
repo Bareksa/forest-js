@@ -145,4 +145,39 @@ export default class ForestStatic {
     static getAsClass<T>(_class: T): T {
         return instance.getAsClass(_class)
     }
+
+    /**
+     * get value from the key on stored object.
+     * No cast is done.
+     * Returns undefined if no value is found.
+     */
+    getValue(key: string): any {
+        return instance.getValue(key)
+    }
+
+    /**
+     * get value from the key on stored object.
+     * No cast is done.
+     * Returns false if no value is found.
+     */
+    getBool(key: string): boolean {
+        return instance.getBool(key)
+    }
+
+    /**
+     * get value from the key on stored object.
+     * value is considered true if truthy, and false if falsey
+     * Returns false if no value is found.
+     */
+    parseBool(key: string): boolean {
+        return instance.parseBool(key)
+    }
+
+    /**
+     * check if value exist from the key on stored object.
+     * Returns false if no value is found.
+     */
+    isExist(key: string): boolean {
+        return instance.isExist(key)
+    }
 }
