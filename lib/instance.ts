@@ -6,6 +6,7 @@ import doRequest from './internal/repo/request_gen'
 export class Forest {
     private _config: ForestConfigInternal
     private _token: string
+    private kv: any
     constructor(
         token: string,
         host = 'http://localhost:8200',
@@ -68,6 +69,9 @@ export class Forest {
         }
     }
 
+    /**
+     * Fetch key value from vault
+     */
     async getKeyValue<T = any>(key: string): Promise<T> {
         const { timeout, kvEngine, secure } = this.config
         const response = await doRequest(
@@ -82,6 +86,165 @@ export class Forest {
         )
         const parsedResponse: VaultSuccessResponse<T> = JSON.parse(response)
         return parsedResponse.data
+    }
+
+    /**
+     * Fetch key value from vault, stores the object in memory, and primes it for getString, getNumber, etc methods
+     */
+    async manageKeyValue(key: string) {
+        const { timeout, kvEngine, secure } = this.config
+        const response = await doRequest(
+            this.token,
+            this.host,
+            this.port,
+            `/v1/${kvEngine}/${key}`,
+            'GET',
+            undefined,
+            timeout,
+            secure
+        )
+        const parsedResponse: VaultSuccessResponse<any> = JSON.parse(response)
+        this.kv = parsedResponse.data
+    }
+
+    /** @internal */
+    private drillDown(path: string[]): any {
+        const [target, ...next] = path
+        if (!target) {
+            return undefined
+        }
+        if (this.kv[target]) {
+            if (next.length) {
+                this.drillDown(next)
+            } else {
+                return this.kv[target]
+            }
+        } else {
+            return undefined
+        }
+    }
+
+    /**
+     * get value from the key on stored object.
+     * Result value is considered string.
+     * No cast is done.
+     * Returns empty string if no value is found.
+     */
+    getString(key: string): string {
+        const path = key.split('.')
+        const value = this.drillDown(path)
+        if (value === void 0) {
+            return ''
+        }
+        return value as string
+    }
+
+    /**
+     * get value from the key on stored object and attempt
+     * to parse it.
+     * Returns empty string if no value is found.
+     */
+    parseString(key: string): string {
+        const path = key.split('.')
+        const value = this.drillDown(path)
+        if (value === void 0) {
+            return ''
+        }
+        if (typeof value === 'string') {
+            return value
+        } else {
+            return JSON.stringify(value)
+        }
+    }
+
+    /**
+     * get value from the key on stored object.
+     * Result value is considered number.
+     * No cast is done.
+     * Returns 0 if no value is found.
+     */
+    getNumber(key: string): number {
+        const path = key.split('.')
+        const value = this.drillDown(path)
+        if (value === void 0) {
+            return 0
+        }
+        return value as number
+    }
+
+    /**
+     * get value from the key on stored object and attempt
+     * to parse it.
+     * Returns 0 if no value is found or cannot be parsed.
+     */
+    parseNumber(key: string): number {
+        const path = key.split('.')
+        const value = this.drillDown(path)
+        if (value === void 0) {
+            return 0
+        }
+        const num = Number(value)
+        if (isNaN(num)) {
+            return 0
+        }
+        return num
+    }
+
+    /**
+     * get value from the key on stored object.
+     * Result value is considered string array.
+     * No cast is done.
+     * Returns empty array if no value is found.
+     */
+    getStringArray(key: string): string[] {
+        const path = key.split('.')
+        const value = this.drillDown(path)
+        if (value === void 0) {
+            return []
+        }
+        return value as string[]
+    }
+
+    /**
+     * get value from the key on stored object.
+     * Result value is considered array.
+     * No cast is done.
+     * Returns empty array if no value is found.
+     */
+    getArray(key: string): any[] {
+        const path = key.split('.')
+        const value = this.drillDown(path)
+        if (value === void 0) {
+            return []
+        }
+        return value as any[]
+    }
+
+    /**
+     * get value from the key on stored object.
+     * Result value is considered number array.
+     * No cast is done.
+     * Returns empty array if no value is found.
+     */
+    getNumberArray(key: string): number[] {
+        const path = key.split('.')
+        const value = this.drillDown(path)
+        if (value === void 0) {
+            return []
+        }
+        return value as number[]
+    }
+
+    /**
+     * get value from the key on stored object.
+     * Result value is considered the given class.
+     * No cast is done.
+     * Returned value ***is undefined*** if no value is found
+     */
+    getAsClass<T>(key: string, _class: T): T {
+        const path = key.split('.')
+        const value = this.drillDown(path)
+        return value as T
     }
 
     get config() {
