@@ -12,7 +12,6 @@ beforeAll(() => {
     return doRequest(
         process.env.VAULT_TOKEN!,
         process.env.VAULT_TEST_HOST!,
-        parseInt(process.env.VAULT_TEST_PORT!),
         '/v1/kv/__test__',
         'PUT',
         {
@@ -35,7 +34,6 @@ describe('testing key value', () => {
 
     test('fail get kv engine', async () => {
         Forest.init(process.env.VAULT_TOKEN!, process.env.VAULT_HOST!)
-
         try {
             await Forest.getKeyValue('asdfasdfasdf')
         } catch (e) {
@@ -51,7 +49,6 @@ afterAll(() =>
     doRequest(
         process.env.VAULT_TOKEN!,
         process.env.VAULT_TEST_HOST!,
-        parseInt(process.env.VAULT_TEST_PORT!),
         '/v1/kv/__test__',
         'DELETE'
     )
